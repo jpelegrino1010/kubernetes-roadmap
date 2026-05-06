@@ -14,13 +14,22 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/example/app-go/internal/config"
 	"github.com/example/app-go/internal/health"
 	"github.com/example/app-go/internal/user"
 	"github.com/example/app-go/internal/version"
 )
 
 func main() {
-	log := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+	cfg := config.Load()
+
+	logLevel := slog.LevelInfo
+	if cfg.LogLevel == "debug" {
+		logLevel = slog.LevelDebug
+	}
+
+	log := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: logLevel}))
+	log.Info("startup", "app_env", cfg.AppEnv, "log_level", cfg.LogLevel)
 
 	if err := run(log); err != nil {
 		log.Error("startup", "error", err)
