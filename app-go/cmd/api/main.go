@@ -16,6 +16,7 @@ import (
 
 	"github.com/example/app-go/internal/health"
 	"github.com/example/app-go/internal/user"
+	"github.com/example/app-go/internal/version"
 )
 
 func main() {
@@ -41,6 +42,7 @@ func run(log *slog.Logger) error {
 	mux := http.NewServeMux()
 	mux.Handle("GET /health", health.Handler())
 	mux.Handle("GET /users", user.Handler(userStore))
+	mux.Handle("GET /version", version.Handler())
 
 	// -------------------------------------------------------------------------
 	// Server — validate configuration at startup, not lazily.
